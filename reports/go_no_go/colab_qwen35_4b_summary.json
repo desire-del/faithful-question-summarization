@@ -1,0 +1,18 @@
+{
+  "source": "Summary cell of notebooks/colab/00_go_no_go.ipynb, pasted back on 2026-11-27 (full JSON reports stayed on the Colab VM).",
+  "gpu": "NVIDIA L4",
+  "packages": {"torch": "2.11.0+cu130", "transformers": "5.20.2", "trl": "1.19.0", "peft": "0.21.2", "accelerate": "1.15.0", "vllm": null},
+  "generate_qwen35_4b_colab": {
+    "decision": "go", "model_class": "Qwen3_5ForCausalLM", "peak_memory_gb": 8.52,
+    "generate_seconds_batch": 3.72, "thinking_leaked": false,
+    "samples": [
+      "As a 34-year-old woman who is 3 months pregnant and takes levothyroxine 50 mcg daily for hypothyroidism, can I continue this medication during pregnancy?",
+      "Is it safe to give my 4-year-old son ibuprofen 100mg for a fever of 102F that has lasted 3 days, or should I see a doctor?",
+      "Is it normal for metformin to cause stomach cramps and diarrhea in a person with type 2 diabetes, and will these symptoms go away?"
+    ]
+  },
+  "grpo_qwen35_4b_colab": {
+    "decision": "go", "error": null, "model_class": "Qwen3_5ForCausalLM", "peak_memory_gb": 9.2,
+    "steady_step_seconds": 6.19, "estimated_full_run_hours": 3.1
+  }
+}

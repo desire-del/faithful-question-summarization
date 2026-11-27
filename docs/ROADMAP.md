@@ -1,7 +1,7 @@
 # Roadmap
 
 > Objectif : **finir**. 7 phases, environ 9 à 10 semaines au maximum à temps partiel.
-> GPU : ~15 h sur Colab (4B, BART) et ~30 h sur le cluster (27B). Estimations à recaler en phase 0.
+> GPU : ~20 h de L4 sur Colab (4B, BART ; recalé avec la mesure de la phase 0) et ~30 h sur le cluster (27B, à recaler).
 
 ## Règles anti-dérive (à relire au début de chaque session)
 
@@ -88,10 +88,10 @@
 | Bake-off (3 modèles de ~30B, inférence vLLM) | cluster | ~3 h |
 | BART × 3 | Colab | ~0,5 h |
 | 4B : recherche d'hyperparamètres et SFT (LoRA et full) | Colab | ~4 h |
-| 4B : best-of-N, DPO, GRPO, ablation | Colab | ~9 h |
+| 4B : best-of-N, DPO, GRPO (3 × ~3,1 h mesurés), ablation | Colab (L4) | ~14 h |
 | 27B : recherche d'hyperparamètres et SFT LoRA | cluster | ~6 h |
 | 27B : best-of-N, DPO, GRPO | cluster | ~20 h |
 | Génération finale | les deux | ~1,5 h |
-| **Total** | | **~15 h Colab + ~30 h cluster** |
+| **Total** | | **~20 h Colab (L4) + ~30 h cluster** |
 
 Le poste le plus incertain est GRPO sur le 27B : il est mesuré en phase 0, et on recale ce tableau à ce moment-là.
