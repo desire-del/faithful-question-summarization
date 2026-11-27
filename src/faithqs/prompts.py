@@ -25,5 +25,15 @@ def chat_messages(question: str, answer: str | None = None) -> list[dict[str, st
     return messages
 
 
+def chat_messages_fewshot(question: str, examples: list[tuple[str, str]]) -> list[dict[str, str]]:
+    """Few-shot chat prompt (bake-off): one user/assistant turn per (question, summary)."""
+    messages = [{"role": "system", "content": SYSTEM}]
+    for q, a in examples:
+        messages.append({"role": "user", "content": USER_TEMPLATE.format(question=q)})
+        messages.append({"role": "assistant", "content": a})
+    messages.append({"role": "user", "content": USER_TEMPLATE.format(question=question)})
+    return messages
+
+
 def seq2seq_input(question: str) -> str:
     return question

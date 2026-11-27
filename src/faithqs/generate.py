@@ -39,7 +39,10 @@ DECODINGS = {
 
 
 def load_for_generation(
-    model_cfg: DictConfig, checkpoint: str | None = None, adapter: str | None = None
+    model_cfg: DictConfig,
+    checkpoint: str | None = None,
+    adapter: str | None = None,
+    load_in_4bit: bool = False,
 ) -> tuple[Any, Any]:
     """Base model at its pinned revision, a full checkpoint, or base + LoRA adapter."""
     from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
@@ -56,7 +59,8 @@ def load_for_generation(
 
             model = AutoModelForCausalLM.from_pretrained(checkpoint, dtype="auto")
         else:
-            model = modeling.load_causal_lm(model_cfg)
+            # device_map="auto" spreads large checkpoints over the available GPUs
+            model = modeling.load_causal_lm(model_cfg, load_in_4bit=load_in_4bit, device_map="auto")
         if adapter:
             from peft import PeftModel
 
@@ -72,20 +76,28 @@ def generate_texts(
     decoding: Decoding,
     batch_size: int = 16,
     seed: int = 0,
+    fewshot: Sequence[tuple[str, str]] | None = None,
 ) -> list[list[str]]:
     """Return, for every source, ``num_return_sequences`` generated texts."""
     import torch
     from transformers import set_seed
 
     set_seed(seed)
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    model = model.to(device).eval()
+    if getattr(model, "hf_device_map", None):  # already placed (device_map / quantized)
+        device = model.device
+    else:
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        model = model.to(device)
+    model.eval()
     causal = model_cfg.arch == "causal"
     if causal:
         tokenizer.padding_side = "left"
-        inputs = [
-            modeling.render_prompt(tokenizer, model_cfg, prompts.chat_messages(s)) for s in sources
-        ]
+        build = (
+            (lambda q: prompts.chat_messages_fewshot(q, list(fewshot)))
+            if fewshot
+            else prompts.chat_messages
+        )
+        inputs = [modeling.render_prompt(tokenizer, model_cfg, build(s)) for s in sources]
     else:
         inputs = [prompts.seq2seq_input(s) for s in sources]
 

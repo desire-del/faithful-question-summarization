@@ -4,3 +4,5 @@ revision: 842da3794eaa0b77d5f08bae87a17459d91ff475
 arch: causal
 role: bakeoff
 dtype: bfloat16
+chat_template_kwargs:
+  enable_thinking: false
