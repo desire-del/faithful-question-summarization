@@ -27,3 +27,19 @@ jobs:
           uv run ruff format --check .
       - name: Test
         run: uv run pytest
+
+  smoke:
+    # Tiny-model end-to-end pipeline on CPU: SFT -> generation -> scoring.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.4.0  # no floating major tag published
+        with:
+          python-version: "3.12"
+      - name: Install with CPU-only torch
+        run: |
+          uv venv
+          uv pip install --torch-backend=cpu -e ".[train,eval]" pytest
+      - name: Smoke test
+        run: .venv/bin/pytest -m smoke
+

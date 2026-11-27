@@ -324,3 +324,26 @@ def build(
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
     manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
     return manifest
+
+
+def fetch(data_dir: Path, manifest_path: Path) -> dict[str, Any]:
+    """Rebuild the splits from the pinned sources and check them against a versioned manifest.
+
+    Used on Colab / the cluster: processed data is not versioned, but its manifest is.
+    """
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    params = BuildParams(**manifest["params"])
+    cache = Path(data_dir) / "raw"
+    meqsum, _ = load_meqsum(cache)
+    mediqa, _ = load_mediqa(cache)
+    splits, _ = assemble_splits(meqsum, mediqa["mediqa2021_val"], mediqa["mediqa2021_test"], params)
+    for name, records in splits.items():
+        expected = manifest["splits"][name]
+        if [r.id for r in records] != expected["ids"] or records_sha256(records) != expected[
+            "sha256"
+        ]:
+            raise ValueError(f"Rebuilt split '{name}' differs from {manifest_path}.")
+    out_dir = Path(data_dir) / manifest["version"]
+    for name, records in splits.items():
+        write_jsonl(out_dir / f"{name}.jsonl", records)
+    return {name: len(records) for name, records in splits.items()}

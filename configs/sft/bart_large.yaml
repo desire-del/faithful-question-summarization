@@ -1,0 +1,12 @@
+# BART-large SFT (anchor). Hyperparameter search: one seed per learning rate, choice on dev
+# ROUGE-L (greedy), then seeds 0-2 at the chosen rate (docs/PROTOCOL.md section 3).
+sft:
+  lr_grid: [1.0e-5, 3.0e-5, 5.0e-5]
+  epochs: 10
+  batch_size: 16
+  grad_accum: 1
+  warmup_ratio: 0.05
+  weight_decay: 0.01
+  early_stopping_patience: 2
+  max_source_tokens: 512
+  max_target_tokens: 64

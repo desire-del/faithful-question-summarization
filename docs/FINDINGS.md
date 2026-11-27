@@ -30,3 +30,13 @@
 
 ## 2026-11-27 : extracteur de jargon choisi sur des annotations de référence
 - Un ensemble OpenMed ×3 + procédures DistilBERT donne F1 = 0,73 sur CHQA (P 0,84, R 0,65). Détails dans `docs/EXTRACTOR.md`.
+
+## 2026-11-27 : question ouverte sur SummaC et l'objectif H4
+- Sur le dev, les **résumés d'experts eux-mêmes** obtiennent un SummaC-ZS moyen de **−0,016**
+  (`runs/smoke_oracle`, implémentation alignée sur `summac==0.0.4`). FocusMed annonce 0,603 pour son système
+  et 0,448 pour BART sur le test MEDIQA.
+- SummaC (NLI source ⇒ résumé) récompense mécaniquement les phrases **recopiées** de la source : un objectif
+  « SummaC > 0,603 » peut entrer en tension avec notre pénalité anti-recopie.
+- Vérification prévue : la reproduction de BART (phase 1) donnera notre SummaC pour BART, à comparer à son 0,448.
+  Si l'écart est grand, la configuration de FocusMed diffère de celle par défaut. On le documentera, et la partie
+  SummaC de H4 sera rapportée avec cette réserve, sans changer la règle de décision.

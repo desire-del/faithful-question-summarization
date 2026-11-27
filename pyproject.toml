@@ -53,4 +53,5 @@ select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q"
+addopts = "-q -m 'not smoke'"
+markers = ["smoke: end-to-end CPU pipeline test with a tiny model (CI job 'smoke')"]

@@ -1,0 +1,6 @@
+# Smoke tests only: random weights, full BART vocabulary, a few MB. Never used for results.
+name: sshleifer/bart-tiny-random
+revision: 69bce9237e4fa10ea015446395ec0108067890cf
+arch: seq2seq
+role: smoke
+dtype: float32
