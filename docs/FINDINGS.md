@@ -17,3 +17,16 @@
 - Qwen3.5-0.8B perd du jargon (« hypothyroidism ») et recopie certaines questions.
 - Qwen3.5-4B garde le jargon mais produit des résumés 2 à 3 fois plus longs que les références.
 - Preuve : `docs/GO_NO_GO.md`, `reports/go_no_go/`.
+
+## 2026-11-27 : SummaC sous transformers 5 donne silencieusement de faux scores
+- Le paquet de référence (`summac==0.0.4`) ne s'installe pas avec transformers 5 (il exige huggingface-hub ≤ 0.17).
+  Notre réimplémentation donnait d'abord un écart moyen de **0,34** avec la référence (et jusqu'à 1,12), pour deux raisons :
+  1. le tokenizer ALBERT ne renvoie plus les `token_type_ids` par défaut, et le modèle NLI les utilise ;
+  2. transformers 5 convertit `spiece.model` autrement que la 4.35 (« -marie », « (cmt) »...).
+- Correctif : on demande explicitement les segments, et on embarque le `tokenizer.json` exporté par transformers 4.35.2
+  (hash vérifié au chargement). Résultat : un écart maximal de **1e-6** sur 60 paires, comparé à la référence installée dans un
+  environnement isolé (`reports/summac/equivalence.json`, essais ratés conservés).
+- Pour le rapport : toute comparaison de SummaC avec la littérature dépend de ce détail. Nos chiffres sont alignés sur le paquet d'origine.
+
+## 2026-11-27 : extracteur de jargon choisi sur des annotations de référence
+- Un ensemble OpenMed ×3 + procédures DistilBERT donne F1 = 0,73 sur CHQA (P 0,84, R 0,65). Détails dans `docs/EXTRACTOR.md`.

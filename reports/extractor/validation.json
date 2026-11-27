@@ -1,0 +1,235 @@
+{
+  "check": "extractor_selection",
+  "rule": "highest lenient-overlap jargon F1 on the selection half, reported on the other half",
+  "chosen": "openmed_trio",
+  "corpus": {
+    "url": "https://bionlp.nlm.nih.gov/CHIQAcollections/CHQA-Corpus-1.0.zip",
+    "sha256": "cd9515273fca29371e7787cd77517dcfe37b393dd28cc437857908a233cda49e",
+    "adjudication": "MACE",
+    "documents": 1720,
+    "gold_jargon_labels": [
+      "Anatomy",
+      "CellularEntity",
+      "DiagnosticProcedure",
+      "DrugSupplement",
+      "GeneProtein",
+      "Problem",
+      "ProcedureDevice",
+      "Substance"
+    ]
+  },
+  "results": {
+    "deberta_maccrobat": {
+      "selection": {
+        "jargon": {
+          "precision": 0.926,
+          "recall": 0.39,
+          "f1": 0.549,
+          "n_pred": 1579,
+          "n_gold": 6291,
+          "recall_by_label": {
+            "Anatomy": 0.495,
+            "CellularEntity": 0.277,
+            "DiagnosticProcedure": 0.502,
+            "DrugSupplement": 0.369,
+            "GeneProtein": 0.333,
+            "Problem": 0.385,
+            "ProcedureDevice": 0.24,
+            "Substance": 0.28
+          }
+        },
+        "context_vs_measurement": {
+          "precision": 0.151,
+          "recall": 0.741,
+          "f1": 0.251,
+          "n_pred": 523,
+          "n_gold": 108,
+          "recall_by_label": {
+            "Measurement": 0.741
+          }
+        },
+        "seconds_per_100_docs": 2.83
+      },
+      "report": {
+        "jargon": {
+          "precision": 0.936,
+          "recall": 0.388,
+          "f1": 0.549,
+          "n_pred": 1618,
+          "n_gold": 6411,
+          "recall_by_label": {
+            "Anatomy": 0.488,
+            "CellularEntity": 0.516,
+            "DiagnosticProcedure": 0.588,
+            "DrugSupplement": 0.362,
+            "GeneProtein": 0.342,
+            "Problem": 0.385,
+            "ProcedureDevice": 0.237,
+            "Substance": 0.233
+          }
+        },
+        "context_vs_measurement": {
+          "precision": 0.078,
+          "recall": 0.636,
+          "f1": 0.139,
+          "n_pred": 487,
+          "n_gold": 55,
+          "recall_by_label": {
+            "Measurement": 0.636
+          }
+        },
+        "seconds_per_100_docs": 2.78
+      }
+    },
+    "distilbert_maccrobat": {
+      "selection": {
+        "jargon": {
+          "precision": 0.761,
+          "recall": 0.553,
+          "f1": 0.641,
+          "n_pred": 3700,
+          "n_gold": 6291,
+          "recall_by_label": {
+            "Anatomy": 0.533,
+            "CellularEntity": 0.383,
+            "DiagnosticProcedure": 0.583,
+            "DrugSupplement": 0.694,
+            "GeneProtein": 0.59,
+            "Problem": 0.542,
+            "ProcedureDevice": 0.491,
+            "Substance": 0.479
+          }
+        },
+        "context_vs_measurement": {
+          "precision": 0.077,
+          "recall": 0.796,
+          "f1": 0.14,
+          "n_pred": 1240,
+          "n_gold": 108,
+          "recall_by_label": {
+            "Measurement": 0.796
+          }
+        },
+        "seconds_per_100_docs": 1.04
+      },
+      "report": {
+        "jargon": {
+          "precision": 0.773,
+          "recall": 0.548,
+          "f1": 0.641,
+          "n_pred": 3662,
+          "n_gold": 6411,
+          "recall_by_label": {
+            "Anatomy": 0.557,
+            "CellularEntity": 0.391,
+            "DiagnosticProcedure": 0.656,
+            "DrugSupplement": 0.632,
+            "GeneProtein": 0.553,
+            "Problem": 0.548,
+            "ProcedureDevice": 0.48,
+            "Substance": 0.418
+          }
+        },
+        "context_vs_measurement": {
+          "precision": 0.036,
+          "recall": 0.636,
+          "f1": 0.068,
+          "n_pred": 1137,
+          "n_gold": 55,
+          "recall_by_label": {
+            "Measurement": 0.636
+          }
+        },
+        "seconds_per_100_docs": 0.98
+      }
+    },
+    "openmed_trio": {
+      "selection": {
+        "jargon": {
+          "precision": 0.889,
+          "recall": 0.593,
+          "f1": 0.711,
+          "n_pred": 3602,
+          "n_gold": 6291,
+          "recall_by_label": {
+            "Anatomy": 0.743,
+            "CellularEntity": 0.574,
+            "DiagnosticProcedure": 0.297,
+            "DrugSupplement": 0.635,
+            "GeneProtein": 0.308,
+            "Problem": 0.625,
+            "ProcedureDevice": 0.224,
+            "Substance": 0.513
+          }
+        },
+        "context_vs_measurement": {
+          "precision": 0.185,
+          "recall": 0.583,
+          "f1": 0.28,
+          "n_pred": 325,
+          "n_gold": 108,
+          "recall_by_label": {
+            "Measurement": 0.583
+          }
+        },
+        "seconds_per_100_docs": 9.44
+      },
+      "report": {
+        "jargon": {
+          "precision": 0.906,
+          "recall": 0.587,
+          "f1": 0.712,
+          "n_pred": 3594,
+          "n_gold": 6411,
+          "recall_by_label": {
+            "Anatomy": 0.75,
+            "CellularEntity": 0.578,
+            "DiagnosticProcedure": 0.249,
+            "DrugSupplement": 0.609,
+            "GeneProtein": 0.395,
+            "Problem": 0.639,
+            "ProcedureDevice": 0.19,
+            "Substance": 0.464
+          }
+        },
+        "context_vs_measurement": {
+          "precision": 0.108,
+          "recall": 0.582,
+          "f1": 0.183,
+          "n_pred": 314,
+          "n_gold": 55,
+          "recall_by_label": {
+            "Measurement": 0.582
+          }
+        },
+        "seconds_per_100_docs": 9.9
+      }
+    }
+  },
+  "provenance": {
+    "timestamp_utc": "2026-11-27T07:20:21+00:00",
+    "git": {
+      "commit": "cf1a4cae192773e5da933b26918af023916642be",
+      "dirty": true
+    },
+    "config_hash": null,
+    "python": "3.12.13",
+    "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "packages": {
+      "faithqs": "0.0.1",
+      "torch": "2.15.0",
+      "transformers": "5.24.1",
+      "trl": "1.19.0",
+      "peft": "0.22.0",
+      "accelerate": "1.16.0",
+      "vllm": null
+    },
+    "gpu": {
+      "name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "count": 1,
+      "memory_gb": 6.0,
+      "cuda": "13.2",
+      "bf16": true
+    }
+  }
+}
