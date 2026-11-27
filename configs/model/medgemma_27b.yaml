@@ -1,0 +1,6 @@
+# Bake-off contender only (inference). Gated: accept the HAI-DEF terms on the Hub first.
+name: google/medgemma-27b-text-it
+revision: 5b667cf2ddcf064085bc90952edb35a0edbfb79c
+arch: causal
+role: bakeoff
+dtype: bfloat16

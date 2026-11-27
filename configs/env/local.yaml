@@ -1,0 +1,11 @@
+# Laptop (WSL, RTX 4050 6 GB): pipeline development with tiny models only.
+name: local
+paths:
+  data_dir: data
+  runs_dir: runs
+  reports_dir: reports
+hardware:
+  device: cuda
+  gpu_memory_gb: 6
+  precision: bf16
+generation_backend: hf

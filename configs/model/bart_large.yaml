@@ -1,0 +1,6 @@
+# Anchor + encoder-decoder (ADR-001). Literature backbone; MEDIQA 2021 R-L 0.293 to reproduce.
+name: facebook/bart-large
+revision: cb48c1365bd826bd521f650dc2e0940aee54720c
+arch: seq2seq
+role: anchor
+dtype: float32

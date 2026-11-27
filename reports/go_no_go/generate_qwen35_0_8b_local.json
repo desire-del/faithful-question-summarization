@@ -1,0 +1,71 @@
+{
+  "check": "generation_smoke",
+  "decision": "go",
+  "model": "Qwen/Qwen3.5-0.8B@2fc06364715b967f1860aea9cf38778875588b17",
+  "model_class": "Qwen3_5ForCausalLM",
+  "num_parameters": 752393024,
+  "load_seconds": 246.7,
+  "generate_seconds_batch": 2.85,
+  "peak_memory_gb": 1.69,
+  "thinking_leaked": false,
+  "samples": [
+    {
+      "question": "Hi, I'm 34 and 3 months pregnant. I was diagnosed with hypothyroidism last year and take levothyroxine 50 mcg every morning. Can I keep taking it during the pregnancy? Thanks",
+      "output": "Can I continue taking levothyroxine 50 mcg every morning during pregnancy?\n"
+    },
+    {
+      "question": "my son is 4 years old and has had a fever of 102F for 3 days, is it ok to give him ibuprofen 100mg or should i see a doctor",
+      "output": "Is it safe to give ibuprofen 100mg to a 4-year-old with a 3-day fever of 102F?\n"
+    },
+    {
+      "question": "I have type 2 diabeties and my doctor put me on metformin. Since then I have bad stomach cramps and diarrhea. Is this a normal side efect and will it go away?",
+      "output": "Is it normal for my doctor to prescribe metformin to me with type 2 diabetes, and will these stomach cramps and diarrhea symptoms resolve on their own?\n"
+    },
+    {
+      "question": "What is the best treatment for plantar fasciitis? I've had heel pain for 6 months and stretching doesn't help anymore.",
+      "output": "What is the best treatment for plantar fasciitis, given that stretching has not provided relief for six months?\n"
+    },
+    {
+      "question": "My mother (78) has atrial fibrillation and takes warfarin. Can she take turmeric supplements for her arthritis or is there an interaction?",
+      "output": "Can a 78-year-old woman taking warfarin for atrial fibrillation safely take turmeric supplements for arthritis, given the potential for drug-drug and drug-food interactions?\n"
+    },
+    {
+      "question": "I keep getting cold sores on my lip. Is there a cure for herpes simplex or only treatment? I heard about valacyclovir.",
+      "output": "I keep getting cold sores on my lip, is there a cure for herpes simplex or only treatment? I heard about valacyclovir.\n"
+    },
+    {
+      "question": "Can a meniscus tear heal on its own if I don't get surgery? I'm 45 and it only hurts when I climb stairs.",
+      "output": "Can a meniscus tear heal on its own if I don't get surgery?\n"
+    },
+    {
+      "question": "I was prescribed amoxicillin for strep throat but I think I'm allergic to penicillin. What antibiotic can I take instead?",
+      "output": "I was prescribed amoxicillin for strep throat but I think I'm allergic to penicillin. What antibiotic can I take instead?\n"
+    }
+  ],
+  "provenance": {
+    "timestamp_utc": "2026-11-27T06:14:43+00:00",
+    "git": {
+      "commit": null,
+      "dirty": null
+    },
+    "config_hash": "a6d1d5b84869",
+    "python": "3.12.13",
+    "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "packages": {
+      "faithqs": "0.0.1",
+      "torch": "2.15.0",
+      "transformers": "5.24.1",
+      "trl": "1.19.0",
+      "peft": "0.22.0",
+      "accelerate": "1.16.0",
+      "vllm": null
+    },
+    "gpu": {
+      "name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "count": 1,
+      "memory_gb": 6.0,
+      "cuda": "13.2",
+      "bf16": true
+    }
+  }
+}

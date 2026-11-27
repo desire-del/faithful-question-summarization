@@ -1,0 +1,47 @@
+[project]
+name = "faithqs"
+version = "0.0.1"
+description = "Preserving medical jargon in consumer health question summarization through post-training (SFT, best-of-N, DPO, GRPO)."
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "SOUSSOU Koffi Désiré" }]
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "omegaconf>=2.3",
+    "typer>=0.15",
+]
+
+[project.optional-dependencies]
+# GPU training and generation (local RTX 4050, Colab, cluster).
+train = [
+    "torch>=2.8",
+    "transformers>=5.0",
+    "trl>=1.19",
+    "peft>=0.17",
+    "accelerate>=1.10",
+    "datasets>=4.0",
+]
+
+[project.scripts]
+faithqs = "faithqs.cli:app"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4",
+    "ruff>=0.12",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Data, runs and caches (manifests and final results are versioned)
+data/*
+!data/manifests/
+runs/
+wandb/
+*.safetensors
+*.bin
+.cache/
+
+# Local secrets
+.env
+
+# Notebooks
+.ipynb_checkpoints/

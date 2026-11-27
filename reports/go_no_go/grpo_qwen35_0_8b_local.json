@@ -1,0 +1,82 @@
+{
+  "check": "grpo_smoke",
+  "decision": "go",
+  "error": null,
+  "model": "Qwen/Qwen3.5-0.8B@2fc06364715b967f1860aea9cf38778875588b17",
+  "model_class": "Qwen3_5ForCausalLM",
+  "settings": {
+    "env": "local",
+    "model": "qwen35_0_8b",
+    "steps": 4,
+    "num_generations": 8,
+    "max_completion_length": 48,
+    "lora_r": 16,
+    "load_in_4bit": false,
+    "use_vllm": false,
+    "vllm_mode": "colocate"
+  },
+  "step_seconds": [
+    8.56,
+    5.22,
+    5.32,
+    4.93
+  ],
+  "steady_step_seconds": 5.16,
+  "peak_memory_gb": 1.96,
+  "estimated_full_run_hours": 2.58,
+  "train_log": [
+    {
+      "loss": 0.1889907270669937,
+      "completions/mean_length": 30.5,
+      "reward": 0.375,
+      "step": 1
+    },
+    {
+      "loss": 0.0855201706290245,
+      "completions/mean_length": 35.625,
+      "reward": 0.21666666865348816,
+      "step": 2
+    },
+    {
+      "loss": 0.22357042133808136,
+      "completions/mean_length": 25.25,
+      "reward": 0.40833333134651184,
+      "step": 3
+    },
+    {
+      "loss": 0.25237634778022766,
+      "completions/mean_length": 28.75,
+      "reward": 0.4166666567325592,
+      "step": 4
+    },
+    {
+      "step": 4
+    }
+  ],
+  "provenance": {
+    "timestamp_utc": "2026-11-27T06:15:26+00:00",
+    "git": {
+      "commit": null,
+      "dirty": null
+    },
+    "config_hash": "a6d1d5b84869",
+    "python": "3.12.13",
+    "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "packages": {
+      "faithqs": "0.0.1",
+      "torch": "2.15.0",
+      "transformers": "5.24.1",
+      "trl": "1.19.0",
+      "peft": "0.22.0",
+      "accelerate": "1.16.0",
+      "vllm": null
+    },
+    "gpu": {
+      "name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "count": 1,
+      "memory_gb": 6.0,
+      "cuda": "13.2",
+      "bf16": true
+    }
+  }
+}

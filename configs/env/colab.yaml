@@ -1,0 +1,11 @@
+# Google Colab Pro (L4 / A100 40 GB): BART-large and Qwen3.5-4B runs.
+name: colab
+paths:
+  data_dir: /content/faithqs-data
+  runs_dir: /content/drive/MyDrive/faithqs/runs
+  reports_dir: reports
+hardware:
+  device: cuda
+  gpu_memory_gb: 40
+  precision: bf16
+generation_backend: hf

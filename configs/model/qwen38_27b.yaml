@@ -1,0 +1,12 @@
+# Flagship (pending bake-off confirmation, ADR-001 section 5).
+name: Qwen/Qwen3.8-27B
+revision: 37561816e66b5b9153b1b64c10968c18c1e6f4a0
+arch: causal
+role: flagship
+dtype: bfloat16
+chat_template_kwargs:
+  enable_thinking: false
+# FP8 checkpoint usable for vLLM generation if bf16 weights + vLLM do not fit together.
+generation_checkpoint:
+  name: Qwen/Qwen3.8-27B-FP8
+  revision: c3a462cc3d38cf351f3b26cbd763469eeb74ef81

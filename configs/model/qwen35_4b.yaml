@@ -1,0 +1,8 @@
+# Small model: post-training recipe is tuned here, then transferred (ADR-001).
+name: Qwen/Qwen3.5-4B
+revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+arch: causal
+role: small
+dtype: bfloat16
+chat_template_kwargs:
+  enable_thinking: false

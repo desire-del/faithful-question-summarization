@@ -1,0 +1,76 @@
+{
+  "check": "tokenizer_compatibility",
+  "decision": "go",
+  "teacher": {
+    "config": "qwen38_27b",
+    "checkpoint": "Qwen/Qwen3.8-27B@37561816e66b5b9153b1b64c10968c18c1e6f4a0",
+    "vocab_size": 248077,
+    "vocab_sha256": "63c71e09abe4f3dd8136e921bae930667e07bb9aa16b81560a76a0d1be369ec1",
+    "special_tokens": {
+      "eos_token": "<|im_end|>",
+      "pad_token": "<|endoftext|>",
+      "audio_bos_token": "<|audio_start|>",
+      "audio_eos_token": "<|audio_end|>",
+      "audio_token": "<|audio_pad|>",
+      "image_token": "<|image_pad|>",
+      "video_token": "<|video_pad|>",
+      "vision_bos_token": "<|vision_start|>",
+      "vision_eos_token": "<|vision_end|>"
+    },
+    "probe_ids_sha256": "3d634238f2cf1165d4f753ea6dd730379feedcb9b67698347d8096c76b30db69",
+    "chat_render_sha256": "286a10890eeee44fab620fdab9dd67f0748b0193ec6acc979ff8a4f6276dd750",
+    "chat_render_has_think_tag": true
+  },
+  "student": {
+    "config": "qwen35_4b",
+    "checkpoint": "Qwen/Qwen3.5-4B@851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "vocab_size": 248077,
+    "vocab_sha256": "63c71e09abe4f3dd8136e921bae930667e07bb9aa16b81560a76a0d1be369ec1",
+    "special_tokens": {
+      "eos_token": "<|im_end|>",
+      "pad_token": "<|endoftext|>",
+      "audio_bos_token": "<|audio_start|>",
+      "audio_eos_token": "<|audio_end|>",
+      "audio_token": "<|audio_pad|>",
+      "image_token": "<|image_pad|>",
+      "video_token": "<|video_pad|>",
+      "vision_bos_token": "<|vision_start|>",
+      "vision_eos_token": "<|vision_end|>"
+    },
+    "probe_ids_sha256": "3d634238f2cf1165d4f753ea6dd730379feedcb9b67698347d8096c76b30db69",
+    "chat_render_sha256": "286a10890eeee44fab620fdab9dd67f0748b0193ec6acc979ff8a4f6276dd750",
+    "chat_render_has_think_tag": true
+  },
+  "checks": {
+    "same_vocab": true,
+    "same_probe_encodings": true,
+    "same_special_tokens": true,
+    "same_chat_render": true
+  },
+  "provenance": {
+    "timestamp_utc": "2026-11-27T06:10:25+00:00",
+    "git": {
+      "commit": null,
+      "dirty": null
+    },
+    "config_hash": null,
+    "python": "3.12.13",
+    "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "packages": {
+      "faithqs": "0.0.1",
+      "torch": "2.15.0",
+      "transformers": "5.24.1",
+      "trl": "1.19.0",
+      "peft": "0.22.0",
+      "accelerate": "1.16.0",
+      "vllm": null
+    },
+    "gpu": {
+      "name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "count": 1,
+      "memory_gb": 6.0,
+      "cuda": "13.2",
+      "bf16": true
+    }
+  }
+}

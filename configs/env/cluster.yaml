@@ -1,0 +1,12 @@
+# School cluster (SLURM, 80 GB GPUs): Qwen3.8-27B runs and the bake-off.
+# FAITHQS_SCRATCH should point to a fast scratch filesystem.
+name: cluster
+paths:
+  data_dir: ${oc.env:FAITHQS_SCRATCH,/tmp}/faithqs/data
+  runs_dir: ${oc.env:FAITHQS_SCRATCH,/tmp}/faithqs/runs
+  reports_dir: reports
+hardware:
+  device: cuda
+  gpu_memory_gb: 80
+  precision: bf16
+generation_backend: vllm
