@@ -9,8 +9,11 @@
 | GRPO TRL + LoRA sur Qwen3.5 | ✅ **GO** (0.8B, local) | `grpo_qwen35_0_8b_local.json` : 4 pas, 5,2 s par pas (8 complétions, génération HF), pic de 2,0 Go | La plomberie TRL et Qwen3.5 fonctionne |
 | Génération du 4B sur Colab | ✅ **GO** (L4) | `Qwen3_5ForCausalLM`, thinking désactivé, pic de 8,5 Go, 3,7 s pour le lot de 8 sondes | — |
 | GRPO du 4B sur Colab | ✅ **GO** (L4) | 4 pas TRL + LoRA, **6,2 s par pas** (8 complétions, génération HF), **pic de 9,2 Go** : un L4 de 24 Go suffit largement | Run complet estimé à ~3,1 h sur L4 (borne haute, avec des lots de 8 complétions) |
-| GRPO du 27B sur le cluster | ⏳ **à lancer** | `scripts/cluster/go_no_go_27b.sbatch` (bf16 ; repli 4 bits commenté) | Adapter les lignes `#SBATCH` au cluster |
-| Accès au cluster (quota, file d'attente) | ⏳ **à vérifier** | — | — |
+| GRPO du 27B sur le cluster | ⏸️ **reporté** (décision du 2026-11-27) | `scripts/cluster/go_no_go_27b.sbatch` (bf16 ; repli 4 bits commenté) | **Échéance : avant le bake-off, dernière tâche de la phase 1.** Repli si le cluster n'est pas disponible : 27B sur A100 Colab avec poids quantifiés (FP8 pour Qwen, QAT 4 bits pour Gemma 4), biais signalé |
+| Accès au cluster (quota, file d'attente) | ⏸️ **reporté** | — | Même échéance |
+
+> **Écart à la règle anti-dérive n° 3**, décidé explicitement : la phase 1 démarre alors que les
+> deux lignes du cluster restent ouvertes. Aucune tâche de la phase 1 n'en dépend, sauf le bake-off.
 | Corpus CHQs (annotations d'entités de référence) | ✅ **GO** | Téléchargeable (CHQA-Corpus-1.0, 12,5 Mo, format brat). **436 des 1 000 questions MeQSum** y sont annotées (CHQA-email, correspondance des textes et des IDs) | Validation de l'extracteur de jargon côté source. Les annotations ne sont pas adjudiquées : choisir une méthode (MACE). Licence à vérifier |
 | Test MEDIQA 2021 | ✅ **GO** | GitHub `abachaa/MEDIQA2021` : validation (50) et test (100) avec questions et références, CC BY 4.0 | Chargement en phase 1 |
 

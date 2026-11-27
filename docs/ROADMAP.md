@@ -42,7 +42,8 @@
 - [ ] `jargon.py` et `reward.py`, avec tests adverses ; validation de l'extracteur.
 - [ ] `generate.py` (HF et vLLM, best-of-N), `metrics.py` (avec SummaC_ZS), `stats.py`, `report.py`, test lock.
 - [ ] **Ancre** : BART-large SFT × 3 seeds, puis **un** accès journalisé au test pour la reproduction.
-- [ ] **Bake-off** (≤ 1 jour) : Qwen3.8-27B vs Gemma 4 31B vs MedGemma 27B en few-shot sur le dev → décision selon la règle d'ADR-001 §5.
+- [ ] **Go/no-go du cluster** (reporté depuis la phase 0, voir GO_NO_GO.md) : à faire avant le bake-off.
+- [ ] **Bake-off** (≤ 1 jour, **dernière tâche de la phase**) : Qwen3.8-27B vs Gemma 4 31B vs MedGemma 27B en few-shot sur le dev → décision selon la règle d'ADR-001 §5.
 
 **DoD** : ROUGE-L de BART sur MEDIQA à ±0.02 de 0.293 (sinon, écart expliqué avant d'aller plus loin) ; phare confirmé ; test de fumée en CI.
 
