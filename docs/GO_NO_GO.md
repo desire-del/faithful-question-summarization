@@ -7,7 +7,7 @@
 | Tokenizers 4B et 27B identiques | ✅ **GO** | `tokenizers.json` : même vocabulaire (SHA-256), mêmes encodages des sondes, mêmes tokens spéciaux, même rendu du gabarit de chat | Distillation v1.1 possible |
 | Chargement texte seul et génération (Qwen3.5) | ✅ **GO** (0.8B, local) | `generate_qwen35_0_8b_local.json` : `Qwen3_5ForCausalLM` sans la partie vision, thinking bien désactivé, pic de 1,7 Go | À refaire sur 4B (Colab) et 27B (cluster) |
 | GRPO TRL + LoRA sur Qwen3.5 | ✅ **GO** (0.8B, local) | `grpo_qwen35_0_8b_local.json` : 4 pas, 5,2 s par pas (8 complétions, génération HF), pic de 2,0 Go | La plomberie TRL et Qwen3.5 fonctionne |
-| GRPO du 4B sur Colab | ⏳ **à lancer** | `notebooks/colab/00_go_no_go.ipynb` | Nécessite le dépôt sur GitHub (pour le clone) |
+| GRPO du 4B sur Colab | ⏳ **à lancer** | `notebooks/colab/00_go_no_go.ipynb` | Ouvrir le notebook dans Colab (runtime GPU) et tout exécuter |
 | GRPO du 27B sur le cluster | ⏳ **à lancer** | `scripts/cluster/go_no_go_27b.sbatch` (bf16 ; repli 4 bits commenté) | Adapter les lignes `#SBATCH` au cluster |
 | Accès au cluster (quota, file d'attente) | ⏳ **à vérifier** | — | — |
 | Corpus CHQs (annotations d'entités de référence) | ✅ **GO** | Téléchargeable (CHQA-Corpus-1.0, 12,5 Mo, format brat). **436 des 1 000 questions MeQSum** y sont annotées (CHQA-email, correspondance des textes et des IDs) | Validation de l'extracteur de jargon côté source. Les annotations ne sont pas adjudiquées : choisir une méthode (MACE). Licence à vérifier |
