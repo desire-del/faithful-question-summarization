@@ -154,3 +154,14 @@ def test_reference_free_reward_still_punishes_copying() -> None:
         reward.compute_reference_free(copy, c_t, s_t, 11).total
         < reward.compute_reference_free(good, g_t, s_t, 11).total
     )
+
+
+def test_copy_baseline_returns_the_last_question_sentence() -> None:
+    pytest.importorskip("nltk")
+    from faithqs.generate import copy_question
+
+    source = (
+        "SUBJECT: Hair loss MESSAGE: I lose hair on my legs. Is this poor circulation? Any advice?"
+    )
+    assert copy_question(source) == "Any advice?" or copy_question(source).endswith("Any advice?")
+    assert copy_question("I have knee pain since last week.") == "I have knee pain since last week."

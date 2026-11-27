@@ -20,10 +20,12 @@ ROUGE, BERTScore, SummaC and blinded human annotation.
   We remove them from training.
 - Under transformers 5, a naive SummaC-ZS re-implementation silently drifts from the reference package
   (missing ALBERT segment ids, different tokenizer conversion). Ours matches `summac==0.0.4` to 1e-6.
+- On this task SummaC rewards copying: copying the patient's last question scores +0.74 on dev, expert
+  summaries -0.02. It is reported descriptively only, next to the copy ratio.
 
 ## Documents (French working docs)
 - [Design](docs/DESIGN.md) · [Model selection (ADR-001)](docs/MODEL_SELECTION.md) · [Protocol](docs/PROTOCOL.md)
-- [Roadmap](docs/ROADMAP.md) · [Findings](docs/FINDINGS.md) · [Jargon extractor](docs/EXTRACTOR.md)
+- [Metrics](docs/METRICS.md) · [Roadmap](docs/ROADMAP.md) · [Findings](docs/FINDINGS.md) · [Jargon extractor](docs/EXTRACTOR.md)
 - [Parking lot](docs/PARKING_LOT.md) · [v1 post-mortem](docs/V1_POSTMORTEM.md)
 
 ## Development

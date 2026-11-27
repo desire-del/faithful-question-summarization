@@ -71,4 +71,11 @@ _À compléter à la fin de la phase 4, avant l'accès final._
   médiane des références d'entraînement, et `lost` vaut 0. Un best-of-N « oracle » trié par R peut être
   rapporté **sur le dev uniquement**, comme borne supérieure diagnostique, jamais sur le test.
   Corrigé avant toute expérience de best-of-N.
+- **2026-11-27, H4 amendé : le critère SummaC est retiré.** Sur le dev, une baseline qui recopie la dernière
+  phrase-question du patient obtient SummaC-ZS = +0,738 (ROUGE-L 0,137), alors que les résumés d'experts obtiennent
+  −0,016 (`docs/FINDINGS.md`). Dépasser 0,603 ne prouve donc rien sur la fidélité, et viser ce seuil pousserait vers la
+  recopie. **H4 devient** : meilleur système G, ROUGE-L ≥ 0,386 ; meilleur système P, ROUGE-L > 0,339, sur le test
+  MEDIQA 2021. SummaC reste **rapporté à titre descriptif**, toujours avec le taux de recopie (CR) et la baseline de
+  recopie B0. Décidé avant tout résultat de nos systèmes : seules des références et une baseline triviale ont été scorées,
+  sur le dev uniquement.
 

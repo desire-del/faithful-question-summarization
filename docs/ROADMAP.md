@@ -54,7 +54,7 @@
 - [ ] 4B : recherche d'hyperparamètres (3 taux d'apprentissage) pour LoRA et full, puis P1 et P2 × 3 seeds (Colab).
 - [ ] 27B : recherche d'hyperparamètres LoRA (3 taux d'apprentissage), puis G1 × 3 seeds (cluster).
 
-**DoD** : tableau du dev pour B1, P0–P2, G0–G1 (qualité, jargon, SummaC, coût) avec IC → première réponse à H2.
+**DoD** : tableau du dev pour B0, B1, P0–P2, G0–G1 (qualité, jargon, SummaC avec recopie, coût) avec IC → première réponse à H2.
 
 ## Phase 3 : post-training du 4B, mise au point de la recette (≤ 1,5 semaine) → `v0.3`
 - [ ] Réglage des poids de R sur le dev, puis gel et hachage.

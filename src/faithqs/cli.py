@@ -101,9 +101,12 @@ def train_sft_cmd(
 @app.command()
 def generate(
     env: Annotated[str, typer.Option()],
-    model: Annotated[str, typer.Option()],
     split: Annotated[str, typer.Option(help="dev or test (test needs --final --purpose).")],
     out: Annotated[Path, typer.Option(help="Prediction file (.jsonl), never overwritten.")],
+    model: Annotated[
+        str | None, typer.Option(help="Model config (not needed for a baseline).")
+    ] = None,
+    baseline: Annotated[str | None, typer.Option(help="'copy': B0, no model.")] = None,
     decoding: Annotated[str, typer.Option(help="greedy, beam4 or sample8")] = "greedy",
     checkpoint: Annotated[str | None, typer.Option(help="Fine-tuned model directory.")] = None,
     adapter: Annotated[str | None, typer.Option(help="LoRA adapter directory.")] = None,
@@ -119,9 +122,19 @@ def generate(
 
     if out.exists():
         raise typer.BadParameter(f"{out} exists; predictions are never overwritten.")
+    if (model is None) == (baseline is None):
+        raise typer.BadParameter("Give exactly one of --model or --baseline.")
+    if baseline not in (None, "copy"):
+        raise typer.BadParameter("The only baseline is 'copy' (B0).")
     testlock.authorize(split, final, purpose, [str(out)])
-    cfg = config.compose(env, model)
     records = data.load_split(split, DATA_DIR, MANIFEST)
+    if baseline == "copy":
+        predictions = [gen.copy_question(r.source) for r in records]
+        meta = {"model": "baseline:copy_question (B0)", "split": split}
+        gen.write_predictions(out, records, predictions, meta)
+        typer.echo(f"wrote {len(predictions)} B0 predictions to {out}")
+        return
+    cfg = config.compose(env, model)
     dec = gen.DECODINGS[decoding]
     model_obj, tokenizer = gen.load_for_generation(cfg.model, checkpoint, adapter)
     outputs = gen.generate_texts(

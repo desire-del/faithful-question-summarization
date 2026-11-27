@@ -39,7 +39,7 @@
   « SummaC > 0,603 » peut entrer en tension avec notre pénalité anti-recopie.
 - Vérification prévue : la reproduction de BART (phase 1) donnera notre SummaC pour BART, à comparer à son 0,448.
   Si l'écart est grand, la configuration de FocusMed diffère de celle par défaut. On le documentera, et la partie
-  SummaC de H4 sera rapportée avec cette réserve, sans changer la règle de décision.
+  SummaC de H4 sera rapportée avec cette réserve. *(Mise à jour : la baseline de recopie ci-dessous a tranché, le critère est retiré de H4.)*
 
 ## 2026-11-27 : une baseline qui recopie la question bat l'« état de l'art » en SummaC
 - Sur le dev (150 questions), avec notre SummaC-ZS aligné sur `summac==0.0.4` :
@@ -56,5 +56,5 @@
   NLI juge mal une *question* (qui n'affirme rien).
 - Conséquence : sur cette tâche, SummaC n'est **pas** une preuve de fidélité. Il récompense l'extraction. Le 0,603 de FocusMed
   n'est pas un objectif pertinent en soi. On rapportera toujours SummaC **avec** le taux de recopie et la baseline de recopie
-  comme repère. La décision de modifier H4 est à prendre (PROTOCOL §8) avant tout résultat de nos systèmes.
+  comme repère. **Décision du 2026-11-27 : le critère SummaC est retiré de H4** (PROTOCOL §8), avant tout résultat de nos systèmes.
 

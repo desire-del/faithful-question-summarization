@@ -126,6 +126,18 @@ def generate_texts(
     return outputs
 
 
+def copy_question(source: str) -> str:
+    """Baseline B0: the patient's last question sentence, copied verbatim (no model).
+
+    It calibrates SummaC and the copy ratio: on dev it scores SummaC +0.74 vs -0.02 for experts.
+    """
+    from faithqs.metrics import split_sentences
+
+    sentences = split_sentences(source) or [source]
+    questions = [s for s in sentences if "?" in s]
+    return questions[-1] if questions else sentences[-1]
+
+
 def median_reference_words(train: Sequence[Record]) -> int:
     """Length prior for R_free: median word count of the training references."""
     return round(statistics.median(len(r.target.split()) for r in train))

@@ -32,7 +32,7 @@ Les hypothèses sont figées par commit avant les expériences, dans `docs/PROTO
 | **H1 Mesure** | ROUGE s'accorde mal avec le jugement humain sur la préservation du jargon ; nos métriques de jargon s'accordent mieux. |
 | **H2 Architecture** | Après SFT, l'encodeur-décodeur de référence (BART-large) hallucine moins de termes que des décodeurs bien plus gros, à ROUGE comparable. |
 | **H3 Post-training** | GRPO réduit d'au moins 30 % (en relatif) la perte de jargon par rapport au SFT, pour une perte ≤ 1 point de ROUGE-L. **H3b** : sans pénalité de longueur, le modèle triche en recopiant la question. |
-| **H4 État de l'art** | Sur le test MEDIQA 2021, le phare après post-training dépasse FocusMed en SummaC_ZS (0.603) et égale ou dépasse son ROUGE-L (0.386). Le petit modèle après post-training dépasse le SFT LLaMA3.1-8B (ROUGE-L 0.339). |
+| **H4 État de l'art** (amendé, PROTOCOL §8) | Sur le test MEDIQA 2021, le phare après post-training égale ou dépasse le ROUGE-L de FocusMed (0.386). Le petit modèle après post-training dépasse le SFT LLaMA3.1-8B (ROUGE-L 0.339). SummaC est rapporté à titre descriptif seulement : une baseline qui recopie la question atteint 0,74. |
 
 Les résultats négatifs sont publiés tels quels.
 
@@ -61,6 +61,7 @@ Le détail de l'analyse est dans [MODEL_SELECTION.md](MODEL_SELECTION.md).
 
 | ID | Système | Seeds |
 |---|---|---|
+| B0 | Recopie de la dernière phrase-question du patient (sans modèle) : repère pour SummaC et la recopie | — |
 | B1 | BART-large, SFT | 3 |
 | P0 / G0 | Qwen3.5-4B / Qwen3.8-27B, zero-shot | — |
 | P1 | 4B, SFT LoRA | 3 |
@@ -110,7 +111,7 @@ Règle : **le jargon est dans R, donc il ne peut pas être la seule preuve**.
 | Rappel du jargon essentiel, termes perdus, termes hallucinés | **oui** | Rapportés, mais signalés « optimisés » |
 | ROUGE-1/2/L | non | Comparaison avec l'état de l'art |
 | BERTScore | non | Comparaison avec l'état de l'art |
-| **SummaC_ZS** | non | Fidélité par NLI, **métrique du SOTA** (FocusMed) |
+| SummaC_ZS | non | NLI source ⇒ résumé, utilisé par FocusMed. **Descriptif uniquement** : il récompense la recopie (B0 = 0,74, experts = −0,02), donc toujours affiché avec CR et B0 |
 | Longueur, ratio de recopie | non | Détection du hacking |
 | **Annotation humaine** | non | Preuve principale de fidélité |
 | Paramètres, VRAM, temps GPU | — | Coût |
