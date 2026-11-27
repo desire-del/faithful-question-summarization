@@ -14,14 +14,19 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import statistics
+import sys
 from pathlib import Path
 
 from faithqs import config, data, generate, provenance, score, testlock, train_sft
 
 DATA_DIR = Path("data/processed")
 MANIFEST = Path("data/manifests/splits_v1.json")
-REPORTS = Path("reports/sft")
+# Protocol state (lr selection) must survive ephemeral clones: with FAITHQS_STATE_DIR set
+# (Google Drive on Colab) it lives there, next to the test ledger.
+_STATE = os.environ.get(testlock.STATE_ENV)
+REPORTS = Path(_STATE) / "reports" / "sft" if _STATE else Path("reports/sft")
 TABLE_KEYS = (
     "rouge1",
     "rouge2",
@@ -42,7 +47,12 @@ def run_name(tag: str, lr: float, seed: int) -> str:
     return f"{tag}_lr{lr:g}_s{seed}"
 
 
-LEDGER = testlock.LEDGER
+LEDGER: Path | None = None  # None -> testlock.default_ledger() (persistent state dir if set)
+
+
+def fail(message: str) -> None:
+    print(f"\n[protocol] {message}\n", file=sys.stderr)
+    raise SystemExit(2)
 
 
 def predict_and_score(cfg, run_dir: Path, split: str, decoding: str, records) -> dict:
@@ -61,7 +71,13 @@ def predict_and_score(cfg, run_dir: Path, split: str, decoding: str, records) ->
 
 
 def train_one(cfg, tag: str, lr: float, seed: int) -> Path:
+    """Train, or reuse a finished run (the protocol can be resumed after an interruption)."""
     run_dir = Path(cfg.env.paths.runs_dir) / run_name(tag, lr, seed)
+    if (run_dir / "model").exists():
+        print(f"[protocol] reusing finished run {run_dir}")
+        return run_dir
+    if run_dir.exists():
+        fail(f"{run_dir} exists without a saved model (interrupted run): delete it and rerun.")
     train_sft.train_seq2seq(
         cfg,
         data.load_split("train", DATA_DIR, MANIFEST),
@@ -74,12 +90,27 @@ def train_one(cfg, tag: str, lr: float, seed: int) -> Path:
     return run_dir
 
 
+def dev_summary(cfg, run_dir: Path, decoding: str, dev) -> dict:
+    """Score dev predictions once; reuse existing predictions / scores when resuming."""
+    summary_path = run_dir / "scores" / f"dev.{decoding}.summary.json"
+    if summary_path.exists():
+        return json.loads(summary_path.read_text())
+    predictions = run_dir / "predictions" / f"dev.{decoding}.jsonl"
+    if predictions.exists():
+        return score.score_file(predictions, "dev", DATA_DIR, MANIFEST)
+    return predict_and_score(cfg, run_dir, "dev", decoding, dev)
+
+
 def stage_search(cfg, tag: str) -> None:
+    selection = REPORTS / f"{tag}_lr_selection.json"
+    if selection.exists():
+        print(f"[protocol] search already done: {selection} (chosen lr {chosen_lr(tag):g})")
+        return
     dev = data.load_split("dev", DATA_DIR, MANIFEST)
     results = {}
     for lr in cfg.sft.lr_grid:
         run_dir = train_one(cfg, tag, lr, seed=0)
-        summary = predict_and_score(cfg, run_dir, "dev", "greedy", dev)
+        summary = dev_summary(cfg, run_dir, "greedy", dev)
         results[f"{lr:g}"] = summary["overall"]["rougeL"]["mean"]
         print(f"lr={lr:g}  dev ROUGE-L={results[f'{lr:g}']:.4f}")
     chosen = max(cfg.sft.lr_grid, key=lambda lr: (results[f"{lr:g}"], -lr))  # tie -> lower lr
@@ -95,19 +126,23 @@ def stage_search(cfg, tag: str) -> None:
 
 
 def chosen_lr(tag: str) -> float:
-    return json.loads((REPORTS / f"{tag}_lr_selection.json").read_text())["chosen_lr"]
+    selection = REPORTS / f"{tag}_lr_selection.json"
+    if not selection.exists():
+        fail(
+            f"{selection} is missing: run '--stage search' first and check that it ends with "
+            "'chosen lr: ...'. If the clone was reset, set FAITHQS_STATE_DIR to a persistent "
+            "folder (Google Drive on Colab)."
+        )
+    return json.loads(selection.read_text())["chosen_lr"]
 
 
 def stage_seeds(cfg, tag: str, seeds: list[int]) -> None:
     lr = chosen_lr(tag)
     dev = data.load_split("dev", DATA_DIR, MANIFEST)
     for seed in seeds:
-        run_dir = Path(cfg.env.paths.runs_dir) / run_name(tag, lr, seed)
-        if not (run_dir / "model").exists():
-            train_one(cfg, tag, lr, seed)
+        run_dir = train_one(cfg, tag, lr, seed)
         for decoding in ("greedy", "beam4"):
-            if not (run_dir / "predictions" / f"dev.{decoding}.jsonl").exists():
-                predict_and_score(cfg, run_dir, "dev", decoding, dev)
+            dev_summary(cfg, run_dir, decoding, dev)
 
 
 def aggregate(cfg, tag: str, seeds: list[int], split: str, decoding: str) -> dict:
@@ -168,6 +203,11 @@ def stage_table(cfg, tag: str, seeds: list[int]) -> None:
 def stage_test(cfg, tag: str, seeds: list[int]) -> None:
     lr = chosen_lr(tag)
     runs = [Path(cfg.env.paths.runs_dir) / run_name(tag, lr, s) for s in seeds]
+    missing = [str(r) for r in runs if not (r / "model").exists()]
+    if missing:  # checked BEFORE the access is logged
+        fail(
+            f"No trained model for {missing}: run '--stage seeds' first. The test was not accessed."
+        )
     outputs = [
         str(r / "predictions" / f"test.{d}.jsonl") for r in runs for d in ("greedy", "beam4")
     ]

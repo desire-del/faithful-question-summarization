@@ -52,3 +52,13 @@ def test_each_access_is_logged_and_usable_once(tmp_path: Path) -> None:
     with pytest.raises(testlock.TestLockError, match="already used"):
         testlock.authorize("test", True, "bart_reproduction", ["x"], ledger)
     assert len(testlock.read_ledger(ledger)) == 1
+
+
+def test_ledger_follows_the_persistent_state_dir(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.delenv(testlock.STATE_ENV, raising=False)
+    assert testlock.default_ledger() == testlock.LEDGER
+    monkeypatch.setenv(testlock.STATE_ENV, str(tmp_path / "drive"))
+    assert testlock.default_ledger() == tmp_path / "drive" / "test_ledger.jsonl"
+    testlock.authorize("test", True, "final", ["p.jsonl"])  # no explicit ledger
+    assert testlock.is_recorded("p.jsonl")
+    assert (tmp_path / "drive" / "test_ledger.jsonl").exists()

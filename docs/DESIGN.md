@@ -134,7 +134,8 @@ un tableur, et 20 jugements sont refaits une semaine plus tard (κ).
 2. **Un seul module de génération**, avec des prompts versionnés : HF pour BART et le 4B, vLLM pour les gros.
 3. **La récompense et les métriques de jargon partagent le même code** (`jargon.py`).
 4. **Chaque run garde sa provenance** (config, commit, hash des données et de R, versions, GPU, seed). On n'écrase jamais un run existant.
-5. **Trois environnements, une seule CLI** : le PC (dev, 0.8B), Colab (4B, BART) et le cluster (27B). Le code est identique partout, seule la config change (`configs/env/`).
+5. **État persistant** : sur une machine éphémère (Colab), le registre du test et l'état du protocole (taux choisi) vivent dans `FAITHQS_STATE_DIR` (Google Drive). Recloner le dépôt ne peut donc ni rouvrir l'accès au test, ni perdre une sélection.
+6. **Trois environnements, une seule CLI** : le PC (dev, 0.8B), Colab (4B, BART) et le cluster (27B). Le code est identique partout, seule la config change (`configs/env/`).
 
 ### Flux
 ```

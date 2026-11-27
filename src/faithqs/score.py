@@ -44,7 +44,7 @@ def score_file(
     manifest: Path = Path("data/manifests/splits_v1.json"),
     include: Sequence[str] = ALL_METRICS,
     device: str | None = None,
-    ledger: Path = testlock.LEDGER,
+    ledger: Path | None = None,
 ) -> dict[str, Any]:
     if split == "test" and not testlock.is_recorded(str(predictions_path), ledger):
         raise testlock.TestLockError(
