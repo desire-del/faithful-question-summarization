@@ -132,3 +132,25 @@ def test_preamble_and_empty_outputs_fail_the_format() -> None:
 def test_weights_digest_changes_with_weights() -> None:
     assert reward.RewardWeights().digest() != reward.RewardWeights(lost=0.5).digest()
     assert len(reward.RewardWeights().digest()) == 12
+
+
+def test_reference_free_reward_never_reads_the_reference() -> None:
+    ext = FakeExtractor()
+    pred = "Is levothyroxine safe during pregnancy for hypothyroidism?"
+    pred_t, src_t = ext.extract_batch([pred, SOURCE])
+    free = reward.compute_reference_free(pred, pred_t, src_t, target_words=11)
+    # same result whatever the reference would have been: the function has no access to it
+    assert free.halluc_rate == 0.0 and free.format_ok == 1.0
+    swapped = "Is Synthroid safe during pregnancy?"
+    sw_t = ext.extract_batch([swapped])[0]
+    assert reward.compute_reference_free(swapped, sw_t, src_t, target_words=11).total < free.total
+
+
+def test_reference_free_reward_still_punishes_copying() -> None:
+    ext = FakeExtractor()
+    good, copy = "Is levothyroxine safe during pregnancy for hypothyroidism?", SOURCE
+    g_t, c_t, s_t = ext.extract_batch([good, copy, SOURCE])
+    assert (
+        reward.compute_reference_free(copy, c_t, s_t, 11).total
+        < reward.compute_reference_free(good, g_t, s_t, 11).total
+    )

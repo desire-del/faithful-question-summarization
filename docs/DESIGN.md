@@ -96,7 +96,7 @@ R(x, ŷ, y) =  1.0 · |J(ŷ) ∩ J*| / |J*|                  # jargon essentiel 
 - R est une fonction pure, testée sur des cas adverses : recopier la source, sortie vide, paraphrase d'un terme, terme inventé, préambule.
 
 ### 5.3 Utilisation
-- **Best-of-N** : 8 candidats, on garde le meilleur selon R. Aucun entraînement : c'est la baseline qui dit si DPO et GRPO apportent vraiment quelque chose.
+- **Best-of-N** : 8 candidats, on garde le meilleur selon **R_free**, la variante sans référence (jargon de la source, longueur médiane des références d'entraînement). R lit la référence, donc il ne peut pas servir au test (voir PROTOCOL §8). Aucun entraînement : c'est la baseline qui dit si DPO et GRPO apportent vraiment quelque chose.
 - **DPO** : K = 8 candidats par prompt d'entraînement, générés par le SFT (T = 1.0). Le meilleur selon R devient « chosen », le pire « rejected », et on écarte les paires dont la marge est < δ.
 - **GRPO** : groupes de 8, LoRA, KL vers le SFT.
 - **Monitoring** (W&B) : chaque terme de R, la longueur et le taux de recopie, pour repérer le reward hacking.

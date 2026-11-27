@@ -64,3 +64,11 @@ _À compléter à la fin de la phase 4, avant l'accès final._
   exactes (Jaccard = 1,0) de questions MeQSum (`1-123706665.xml.txt`, `17713.txt`). Comme le prévoit
   la règle de recouvrement (DESIGN §3), elles sont retirées de l'entraînement, ce qui donne
   898 / 100 / 150 / 100. Le dev et le test sont inchangés. Voir `data/manifests/splits_v1.json` (audit).
+- **2026-11-27, best-of-N trié par R_free (sans référence) et non par R.** R lit la référence
+  (le jargon J\* du résumé d'expert). C'est légitime pour l'entraînement (paires DPO, GRPO), mais pas pour
+  trier des candidats au moment du test, où aucun système n'a la référence. P3 / G3 utilisent donc
+  R_free (`reward.compute_reference_free`) : J\* est remplacé par le jargon de la source, |y| par la longueur
+  médiane des références d'entraînement, et `lost` vaut 0. Un best-of-N « oracle » trié par R peut être
+  rapporté **sur le dev uniquement**, comme borne supérieure diagnostique, jamais sur le test.
+  Corrigé avant toute expérience de best-of-N.
+

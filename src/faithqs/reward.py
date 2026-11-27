@@ -9,6 +9,9 @@
 J* is the jargon of the reference (expert summary), J(x) the jargon of the source
 question. All functions here are pure: terms are extracted beforehand, so the reward is
 unit-testable without any model.
+
+R reads the reference, so it is a *training* signal only. Best-of-N reranking at inference
+uses ``compute_reference_free`` (R_free), which never sees the reference.
 """
 
 from __future__ import annotations
@@ -68,15 +71,15 @@ def format_ok(text: str) -> float:
     return 1.0 if stripped.endswith("?") and stripped.count("?") == 1 else 0.0
 
 
-def compute(
+def _score(
     prediction: str,
     prediction_terms: Sequence[Term],
-    source_terms: Sequence[Term],
-    reference: str,
-    reference_terms: Sequence[Term],
-    weights: RewardWeights = RewardWeights(),
+    essential_terms: Sequence[Term],
+    allowed_terms: Sequence[Term],
+    target_words: int,
+    weights: RewardWeights,
 ) -> RewardBreakdown:
-    essential = dedupe(reference_terms)
+    essential = dedupe(essential_terms)
     predicted = dedupe(prediction_terms)
     thr = weights.match_threshold
 
@@ -86,14 +89,13 @@ def compute(
     else:
         missing, recall = [], 1.0  # nothing essential to keep
 
-    allowed = list(source_terms) + list(essential)
     hallucinated = [
-        t for t in predicted if not any(terms_match(t.norm, a.norm, thr) for a in allowed)
+        t for t in predicted if not any(terms_match(t.norm, a.norm, thr) for a in allowed_terms)
     ]
     halluc_rate = len(hallucinated) / len(predicted) if predicted else 0.0
 
     fmt = format_ok(prediction)
-    ratio = n_words(prediction) / max(1, n_words(reference))
+    ratio = n_words(prediction) / max(1, target_words)
     total = (
         weights.keep * recall
         - weights.lost * len(missing)
@@ -110,6 +112,49 @@ def compute(
         total=round(total, 4),
         lost_terms=tuple(t.text for t in missing),
         hallucinated_terms=tuple(t.text for t in hallucinated),
+    )
+
+
+def compute(
+    prediction: str,
+    prediction_terms: Sequence[Term],
+    source_terms: Sequence[Term],
+    reference: str,
+    reference_terms: Sequence[Term],
+    weights: RewardWeights = RewardWeights(),
+) -> RewardBreakdown:
+    """Reference-based R, for training only (DPO pairs, GRPO): needs the expert summary."""
+    return _score(
+        prediction,
+        prediction_terms,
+        essential_terms=reference_terms,
+        allowed_terms=[*source_terms, *reference_terms],
+        target_words=n_words(reference),
+        weights=weights,
+    )
+
+
+# Reference-free variant for best-of-N at inference: no expert summary exists at test time,
+# so the source jargon stands in for J* and a length prior (median train reference length)
+# stands in for |y|. "lost" is off by default: sources hold more terms than a summary keeps.
+REFERENCE_FREE_WEIGHTS = RewardWeights(lost=0.0)
+
+
+def compute_reference_free(
+    prediction: str,
+    prediction_terms: Sequence[Term],
+    source_terms: Sequence[Term],
+    target_words: int,
+    weights: RewardWeights = REFERENCE_FREE_WEIGHTS,
+) -> RewardBreakdown:
+    """Deployable R_free: usable on the test split because it never reads the reference."""
+    return _score(
+        prediction,
+        prediction_terms,
+        essential_terms=source_terms,
+        allowed_terms=source_terms,
+        target_words=target_words,
+        weights=weights,
     )
 
 
