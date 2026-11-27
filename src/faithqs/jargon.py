@@ -227,6 +227,31 @@ CANDIDATES["openmed_plus_procedures"] = [
 DEFAULT_EXTRACTOR = "openmed_plus_procedures"
 
 
+def _trim(text: str, start: int, end: int) -> tuple[int, int]:
+    """Strip whitespace and edge punctuation that tokenizers attach to entity offsets."""
+    while start < end and (text[start].isspace() or text[start] in ",.;:()[]\"'"):
+        start += 1
+    while end > start and (text[end - 1].isspace() or text[end - 1] in ",.;:()[]\"'?!"):
+        end -= 1
+    return start, end
+
+
+def _merge_adjacent(text: str, terms: list[Term]) -> list[Term]:
+    """Join same-kind spans separated only by nothing, a space or a hyphen inside one word
+    group (e.g. "stiff" + "-person syndrome"); recompute the normalized form."""
+    merged: list[Term] = []
+    for term in sorted(terms, key=lambda t: (t.start, -t.end)):
+        prev = merged[-1] if merged else None
+        gap = text[prev.end : term.start] if prev else None
+        if prev and prev.kind == term.kind and term.start >= prev.end and gap in ("", "-"):
+            merged[-1] = Term(
+                text[prev.start : term.end], "", prev.kind, prev.label, prev.start, term.end
+            )
+        else:
+            merged.append(term)
+    return [Term(t.text, normalize_term(t.text), t.kind, t.label, t.start, t.end) for t in merged]
+
+
 class Extractor:
     """NER backend(s) + context rules -> deduplicated terms."""
 
@@ -246,7 +271,9 @@ class Extractor:
                 "token-classification",
                 model=spec.model,
                 revision=spec.revision,
-                aggregation_strategy="simple",
+                # word-level aggregation: a word is never split across entities
+                # ("simple" produced fragments such as "def | rillator")
+                aggregation_strategy="first",
                 stride=64,  # long patient e-mails are chunked instead of truncated
                 device=device,
             )
@@ -270,10 +297,10 @@ class Extractor:
                     )
                     if kind is None:
                         continue
-                    start, end = ent["start"], ent["end"]
-                    surface = texts[i][start:end]
-                    out[i].append(Term(surface, normalize_term(surface), kind, label, start, end))
-        return out
+                    start, end = _trim(texts[i], ent["start"], ent["end"])
+                    if end - start >= 2:
+                        out[i].append(Term(texts[i][start:end], "", kind, label, start, end))
+        return [_merge_adjacent(text, terms) for text, terms in zip(texts, out, strict=True)]
 
     def extract_batch(self, texts: Sequence[str]) -> list[list[Term]]:
         ner = self._ner_terms(texts)

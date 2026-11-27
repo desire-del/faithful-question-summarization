@@ -40,15 +40,30 @@ def rouge(predictions: Sequence[str], references: Sequence[str]) -> list[dict[st
     return out
 
 
+_CACHE: dict[str, Any] = {}
+
+
+def cached(key: str, factory: Any) -> Any:
+    """Load heavy scorers once per process (scoring many prediction files in a row)."""
+    if key not in _CACHE:
+        _CACHE[key] = factory()
+    return _CACHE[key]
+
+
 def bertscore(
     predictions: Sequence[str], references: Sequence[str], device: str | None = None
 ) -> tuple[list[float], dict[str, Any]]:
     import bert_score
 
-    _, _, f1 = bert_score.score(
-        list(predictions), list(references), lang="en", device=device, verbose=False
-    )
-    config = {"package": "bert-score", "version": bert_score.__version__, "lang": "en"}
+    scorer = cached(f"bertscore:{device}", lambda: bert_score.BERTScorer(lang="en", device=device))
+    _, _, f1 = scorer.score(list(predictions), list(references), verbose=False)
+    config = {
+        "package": "bert-score",
+        "version": bert_score.__version__,
+        "lang": "en",
+        "model": scorer.model_type,
+        "layer": scorer.num_layers,
+    }
     return [float(x) for x in f1], config
 
 

@@ -38,10 +38,12 @@
 **DoD** : CI verte ; chaque ligne du go/no-go est tranchée ; budget GPU recalé.
 
 ## Phase 1 : données, jargon, évaluation, ancre et bake-off (≤ 2 semaines) → `v0.1`
-- [ ] `data build` : MeQSum (900 / 100), validation et test MEDIQA, quasi-doublons, recouvrement, manifeste.
-- [ ] `jargon.py` et `reward.py`, avec tests adverses ; validation de l'extracteur.
-- [ ] `generate.py` (HF et vLLM, best-of-N), `metrics.py` (avec SummaC_ZS), `stats.py`, `report.py`, test lock.
-- [ ] **Ancre** : BART-large SFT × 3 seeds, puis **un** accès journalisé au test pour la reproduction.
+- [x] `data build` / `data fetch` : MeQSum (**898** / 100, voir PROTOCOL §8), validation et test MEDIQA, quasi-doublons, recouvrement, manifeste.
+- [x] `jargon.py` et `reward.py`, avec tests adverses ; extracteur choisi sur CHQA (docs/EXTRACTOR.md).
+- [ ] Vérification de l'extracteur sur 30 résumés annotés à la main (`scripts/validation/summary_annotation.py`, **ton annotation**).
+- [x] `generate.py` (HF, best-of-N avec R_free), `metrics.py` (SummaC aligné sur la référence à 1e-6), `stats.py`, `score.py`, test lock. vLLM : avec le cluster.
+- [x] Test de fumée de bout en bout en CI (CPU).
+- [ ] **Ancre** : BART-large SFT × 3 seeds, puis **un** accès journalisé au test pour la reproduction (`notebooks/colab/01_bart_anchor.ipynb`).
 - [ ] **Go/no-go du cluster** (reporté depuis la phase 0, voir GO_NO_GO.md) : à faire avant le bake-off.
 - [ ] **Bake-off** (≤ 1 jour, **dernière tâche de la phase**) : Qwen3.8-27B vs Gemma 4 31B vs MedGemma 27B en few-shot sur le dev → décision selon la règle d'ADR-001 §5.
 

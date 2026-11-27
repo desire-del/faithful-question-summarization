@@ -79,12 +79,14 @@ def score_file(
         for row, value in zip(rows, f1, strict=True):
             row["bertscore"] = value
     if "summac" in include:
-        summac = metrics.SummaCZS(device=device)
+        summac = metrics.cached(f"summac:{device}", lambda: metrics.SummaCZS(device=device))
         for row, value in zip(rows, summac.score(srcs, hyp), strict=True):
             row["summac"] = value
         config["summac"] = {"model": metrics.SUMMAC_MODEL, "revision": metrics.SUMMAC_REVISION}
     if "jargon" in include:
-        extractor = Extractor(CANDIDATES[DEFAULT_EXTRACTOR], device=device)
+        extractor = metrics.cached(
+            f"extractor:{device}", lambda: Extractor(CANDIDATES[DEFAULT_EXTRACTOR], device=device)
+        )
         for row, b in zip(rows, reward.score_batch(hyp, srcs, refs, extractor), strict=True):
             row.update(
                 jr=b.recall,

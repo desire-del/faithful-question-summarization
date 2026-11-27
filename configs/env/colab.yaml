@@ -2,7 +2,7 @@
 name: colab
 paths:
   data_dir: /content/faithqs-data
-  runs_dir: /content/drive/MyDrive/faithqs/runs
+  runs_dir: /content/faithqs-runs  # ephemeral: artifacts are zipped and copied to Drive
   reports_dir: reports
 hardware:
   device: cuda
