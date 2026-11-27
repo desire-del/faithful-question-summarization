@@ -59,4 +59,8 @@ Un test humain apparié (McNemar) accompagne H2 et H3 sur les 50 questions annot
 _À compléter à la fin de la phase 4, avant l'accès final._
 
 ## 8. Écarts au protocole
-_Aucun pour l'instant._
+- **2026-11-27, entraînement à 898 exemples au lieu de 900.** La construction du split a détecté
+  que 2 questions du **test officiel MEDIQA 2021** (`mediqa2021_test:276` et `:318`) sont des copies
+  exactes (Jaccard = 1,0) de questions MeQSum (`1-123706665.xml.txt`, `17713.txt`). Comme le prévoit
+  la règle de recouvrement (DESIGN §3), elles sont retirées de l'entraînement, ce qui donne
+  898 / 100 / 150 / 100. Le dev et le test sont inchangés. Voir `data/manifests/splits_v1.json` (audit).
