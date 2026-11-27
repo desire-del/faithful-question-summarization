@@ -24,6 +24,30 @@ def _manifest_digest(manifest: Path) -> str:
     return hashlib.sha256(manifest.read_bytes()).hexdigest()
 
 
+def resolve_precision(requested: str) -> str:
+    """Mixed precision from the environment config (``hardware.precision``), never emulated.
+
+    ``torch.cuda.is_bf16_supported()`` also returns True on GPUs that only *emulate* bf16
+    (T4, compute capability 7.5): training would silently run slower, in a precision the
+    protocol did not plan. A bf16 environment therefore requires compute capability >= 8.0.
+    Without CUDA (CI, CPU smoke test) training runs in fp32.
+    """
+    import torch
+
+    if requested not in ("bf16", "fp16", "fp32"):
+        raise ValueError(f"Unknown precision {requested!r}.")
+    if not torch.cuda.is_available():
+        return "fp32"
+    major, minor = torch.cuda.get_device_capability()
+    if requested == "bf16" and major < 8:
+        raise RuntimeError(
+            f"{torch.cuda.get_device_name()} (compute capability {major}.{minor}) has no native "
+            "bf16, which this environment requires (hardware.precision=bf16). Use an L4 or "
+            "A100 (on Colab: Runtime > Change runtime type)."
+        )
+    return requested
+
+
 def train_seq2seq(
     cfg: DictConfig,
     train: Sequence[Record],
@@ -48,6 +72,7 @@ def train_seq2seq(
 
     if run_dir.exists():
         raise FileExistsError(f"{run_dir} exists; every run gets a new directory.")
+    precision = resolve_precision(cfg.env.hardware.precision)  # fail before creating anything
     run_dir.mkdir(parents=True)
     sft = cfg.sft
     set_seed(seed)
@@ -70,7 +95,6 @@ def train_seq2seq(
         ds = Dataset.from_list([{"source": r.source, "target": r.target} for r in records])
         return ds.map(encode, batched=True, remove_columns=["source", "target"])
 
-    bf16 = torch.cuda.is_available() and torch.cuda.is_bf16_supported()
     args = Seq2SeqTrainingArguments(
         output_dir=str(run_dir / "checkpoints"),
         learning_rate=lr,
@@ -89,7 +113,8 @@ def train_seq2seq(
         metric_for_best_model="eval_loss",
         greater_is_better=False,
         save_total_limit=1,
-        bf16=bf16,
+        bf16=precision == "bf16",
+        fp16=precision == "fp16",
         logging_steps=10,
         report_to="none",
         seed=seed,
@@ -121,6 +146,8 @@ def train_seq2seq(
         "model": f"{cfg.model.name}@{cfg.model.revision}",
         "lr": lr,
         "seed": seed,
+        "precision": precision,
+        "gpu": torch.cuda.get_device_name() if torch.cuda.is_available() else None,
         "best_eval_loss": trainer.state.best_metric,
         "best_checkpoint_step": trainer.state.best_model_checkpoint,
         "epochs_run": trainer.state.epoch,

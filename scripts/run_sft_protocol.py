@@ -17,6 +17,7 @@ import json
 import os
 import statistics
 import sys
+from datetime import UTC, datetime
 from pathlib import Path
 
 from faithqs import config, data, generate, provenance, score, testlock, train_sft
@@ -76,8 +77,11 @@ def train_one(cfg, tag: str, lr: float, seed: int) -> Path:
     if (run_dir / "model").exists():
         print(f"[protocol] reusing finished run {run_dir}")
         return run_dir
-    if run_dir.exists():
-        fail(f"{run_dir} exists without a saved model (interrupted run): delete it and rerun.")
+    if run_dir.exists():  # interrupted run: keep it aside (never delete), then retrain
+        stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
+        aside = run_dir.with_name(f"{run_dir.name}.incomplete-{stamp}")
+        run_dir.rename(aside)
+        print(f"[protocol] {run_dir} has no saved model (interrupted run): moved to {aside}")
     train_sft.train_seq2seq(
         cfg,
         data.load_split("train", DATA_DIR, MANIFEST),

@@ -40,6 +40,7 @@ uv run faithqs info --env local --model qwen35_0_8b
 ## Pipeline
 ```bash
 uv run faithqs data fetch                       # rebuild splits, verify against data/manifests/splits_v1.json
+uv run python scripts/preflight.py --env colab  # GPU, native bf16, tiny train + every metric (~2 min)
 uv run faithqs train-sft --env colab --model bart_large --sft-config configs/sft/bart_large.yaml --lr 3e-5
 uv run faithqs generate --env colab --model bart_large --split dev --checkpoint <run>/model \
     --out <run>/predictions/dev.greedy.jsonl
