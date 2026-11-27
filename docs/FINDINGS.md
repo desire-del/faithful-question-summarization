@@ -29,7 +29,7 @@
 - Pour le rapport : toute comparaison de SummaC avec la littérature dépend de ce détail. Nos chiffres sont alignés sur le paquet d'origine.
 
 ## 2026-11-27 : extracteur de jargon choisi sur des annotations de référence
-- Un ensemble OpenMed ×3 + procédures DistilBERT donne F1 = 0,73 sur CHQA (P 0,84, R 0,65). Détails dans `docs/EXTRACTOR.md`.
+- Un ensemble OpenMed ×3 + procédures DistilBERT donne F1 = 0,73 sur CHQA (P 0,87, R 0,63), après correction de l'agrégation (v3). Détails dans `docs/EXTRACTOR.md`.
 
 ## 2026-11-27 : question ouverte sur SummaC et l'objectif H4
 - Sur le dev, les **résumés d'experts eux-mêmes** obtiennent un SummaC-ZS moyen de **−0,016**
@@ -40,3 +40,21 @@
 - Vérification prévue : la reproduction de BART (phase 1) donnera notre SummaC pour BART, à comparer à son 0,448.
   Si l'écart est grand, la configuration de FocusMed diffère de celle par défaut. On le documentera, et la partie
   SummaC de H4 sera rapportée avec cette réserve, sans changer la règle de décision.
+
+## 2026-11-27 : une baseline qui recopie la question bat l'« état de l'art » en SummaC
+- Sur le dev (150 questions), avec notre SummaC-ZS aligné sur `summac==0.0.4` :
+
+  | Système | SummaC-ZS | ROUGE-L | Mots |
+  |---|---|---|---|
+  | Résumés d'experts (références) | **−0,016** | 1,000 | 9,6 |
+  | « Recopier la dernière phrase-question du patient » | **+0,738** | 0,137 | 15,1 |
+
+  Par exemple, « Any advice? » obtient +0,93 alors que la référence d'expert (« Where can I find information on hair loss
+  on the lower extremities in men, including causes and treatment? ») obtient −0,79.
+- Interprétation : SummaC mesure si chaque phrase du résumé est **impliquée par une phrase de la source** (NLI). Une phrase
+  recopiée est trivialement impliquée par elle-même. Les reformulations d'experts, elles, ne le sont pas, d'autant qu'un modèle
+  NLI juge mal une *question* (qui n'affirme rien).
+- Conséquence : sur cette tâche, SummaC n'est **pas** une preuve de fidélité. Il récompense l'extraction. Le 0,603 de FocusMed
+  n'est pas un objectif pertinent en soi. On rapportera toujours SummaC **avec** le taux de recopie et la baseline de recopie
+  comme repère. La décision de modifier H4 est à prendre (PROTOCOL §8) avant tout résultat de nos systèmes.
+

@@ -223,7 +223,7 @@ CANDIDATES["openmed_plus_procedures"] = [
 ]
 
 
-# Chosen on CHQA gold annotations (docs/EXTRACTOR.md, reports/extractor/validation_v2.json).
+# Chosen on CHQA gold annotations (docs/EXTRACTOR.md, reports/extractor/validation_v3.json).
 DEFAULT_EXTRACTOR = "openmed_plus_procedures"
 
 
